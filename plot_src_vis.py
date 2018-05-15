@@ -16,7 +16,7 @@ parser.add_argument('-i', '--in_dir', type=str, default='./', help='Input direct
 parser.add_argument('-o', '--out_dir', type=str, default='./', help='Output directory where the plotted figures should be put in.')
 parser.add_argument('-s', '--srcs', type=str, default=['cyg'], nargs='+',  help='Point source names to be plotted.') # -s cyg cas crab
 parser.add_argument('--feed1', type=int, default=[1], nargs='+',  help='Feed No. of the first element of baseline to be plot.') # --feed1 1 3 15 31 32 45 62 78 96
-parser.add_argument('--feed2', type=int, default=[1], nargs='+',  help='Feed No. of the second element of baseline to be plot.') # --feed2 1 2 10 31 40 63 95
+parser.add_argument('--feed2', type=int, default=[1], nargs='+',  help='Feed No. of the second element of baseline to be plot.') # --feed2 1 2 10 31 40 63 80 95
 
 args = parser.parse_args()
 
@@ -60,16 +60,16 @@ for src in args.srcs:
 
                     plt.figure()
                     f, axarr = plt.subplots(3, sharex=True)
-                    axarr[0].plot(xval, sky_vis_plot.real, label='sky')
+                    axarr[0].plot(xval, sky_vis_plot.real, label='total')
                     axarr[0].plot(xval, src_vis_plot.real, label=src)
                     axarr[0].plot(xval, otl_vis_plot.real, label='outlier')
                     axarr[0].plot(xval, (sky_vis_plot - src_vis_plot - otl_vis_plot).real, label='noise')
                     axarr[0].legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=4, mode="expand", borderaxespad=0.)
-                    axarr[1].plot(xval, sky_vis_plot.imag, label='sky')
+                    axarr[1].plot(xval, sky_vis_plot.imag, label='total')
                     axarr[1].plot(xval, src_vis_plot.imag, label=src)
                     axarr[1].plot(xval, otl_vis_plot.imag, label='outlier')
                     axarr[1].plot(xval, (sky_vis_plot - src_vis_plot - otl_vis_plot).imag, label='noise')
-                    axarr[2].plot(xval, np.abs(sky_vis_plot), label='sky')
+                    axarr[2].plot(xval, np.abs(sky_vis_plot), label='total')
                     axarr[2].plot(xval, np.abs(src_vis_plot), label=src)
                     axarr[2].plot(xval, np.abs(otl_vis_plot), label='outlier')
                     axarr[2].plot(xval, np.abs(sky_vis_plot - src_vis_plot - otl_vis_plot), label='noise')
