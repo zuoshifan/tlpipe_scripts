@@ -65,6 +65,7 @@ nc = len(cs)
 
 for fi in range(nf):
     for pi, pol in enumerate(pols):
+        # plot real, imag, abs
         plt.figure()
         f, axarr = plt.subplots(3, sharex=True)
         for si, src in enumerate(args.srcs):
@@ -79,6 +80,7 @@ for fi in range(nf):
         plt.savefig(out_dir + 'gain_%d_%s.png' % (fi, pol))
         plt.close()
 
+        # plot phs
         plt.figure()
         for si, src in enumerate(args.srcs):
             plt.plot(feed, gp[fi][pi][si], cs[si%nc], label=src)
@@ -87,4 +89,17 @@ for fi in range(nf):
         plt.xlim([np.min(feed)-1, np.max(feed)+1])
         plt.ylabel('phase / radian')
         plt.savefig(out_dir + 'phase_%d_%s.png' % (fi, pol))
+        plt.close()
+
+        # plot abs and phs
+        plt.figure()
+        f, axarr = plt.subplots(2, sharex=True)
+        for si, src in enumerate(args.srcs):
+            axarr[0].plot(feed, ga[fi][pi][si], cs[si%nc], label=src)
+            axarr[0].plot(feed, ga[fi][pi][si], cs[si%nc]+'o')
+            axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc], label=src)
+            axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc]+'o')
+        axarr[0].legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=4, mode="expand", borderaxespad=0.)
+        axarr[1].set_xlim([np.min(feed)-1, np.max(feed)+1])
+        plt.savefig(out_dir + 'gain_amp+phs_%d_%s.png' % (fi, pol))
         plt.close()
