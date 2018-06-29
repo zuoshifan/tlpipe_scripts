@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description='Plot gain solved by different poin
 parser.add_argument('-i', '--in_dir', type=str, default='./', help='Input directory where the visibility files are in.')
 parser.add_argument('-o', '--out_dir', type=str, default='./', help='Output directory where the plotted figures should be put in.')
 parser.add_argument('-s', '--srcs', type=str, default=['cyg'], nargs='+',  help='Point source names to be plotted.') # -s cyg cas crab
+parser.add_argument('-f', '--freq', type=int, default=None, nargs='+',  help='Frequency indices to be plot.')
 
 args = parser.parse_args()
 
@@ -36,6 +37,7 @@ for si, src in enumerate(args.srcs):
             feed = f['gain'].attrs['feed']
 
     nf, npol, nfd = gain.shape
+    ifreqs = range(nf) if args.freq is None else args.freq
 
     for fi in range(nf):
         gr.append([])
@@ -63,7 +65,7 @@ for si, src in enumerate(args.srcs):
 cs = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 nc = len(cs)
 
-for fi in range(nf):
+for fi in ifreqs:
     for pi, pol in enumerate(pols):
         # plot real, imag, abs
         plt.figure()

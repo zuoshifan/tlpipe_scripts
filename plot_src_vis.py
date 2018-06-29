@@ -14,6 +14,7 @@ from matplotlib.ticker import MaxNLocator, AutoMinorLocator
 parser = argparse.ArgumentParser(description='Plot visibility components separated by stable PCA algorithm.')
 parser.add_argument('-i', '--in_dir', type=str, default='./', help='Input directory where the visibility files are in.')
 parser.add_argument('-o', '--out_dir', type=str, default='./', help='Output directory where the plotted figures should be put in.')
+parser.add_argument('-f', '--freq', type=int, default=None, nargs='+',  help='Frequency indices to be plot.')
 parser.add_argument('-s', '--srcs', type=str, default=['cyg'], nargs='+',  help='Point source names to be plotted.') # -s cyg cas crab
 parser.add_argument('--feed1', type=int, default=[1], nargs='+',  help='Feed No. of the first element of baseline to be plot.') # --feed1 1 3 15 31 32 45 62 78 96
 parser.add_argument('--feed2', type=int, default=[1], nargs='+',  help='Feed No. of the second element of baseline to be plot.') # --feed2 1 2 10 31 40 63 80 95
@@ -48,7 +49,8 @@ for src in args.srcs:
     xlabel = '%s' % dt[0].date()
     xval = mdates.date2num(dt)
 
-    for fi in range(len(freq)):
+    ifreqs = range(len(freq)) if args.freq is None else args.freq
+    for fi in ifreqs:
         for pi, pol in enumerate(pol):
             for fd1 in args.feed1:
                 fd1_idx = feed.index(fd1)
