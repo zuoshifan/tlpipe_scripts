@@ -58,7 +58,7 @@ else:
     plt.xlim(0, 97)
     plt.xlabel('Feed number')
     plt.legend()
-    plt.savefig(out_dir+'u_xx_%d_%d.png' % (args.time, args.freq))
+    plt.savefig(out_dir+'u_%d_%d_xx.png' % (args.time, args.freq))
     plt.close()
 
     plt.figure()
@@ -67,7 +67,7 @@ else:
     plt.xlim(0, 97)
     plt.xlabel('Feed number')
     plt.legend()
-    plt.savefig(out_dir+'eu_xx_%d_%d.png' % (args.time, args.freq))
+    plt.savefig(out_dir+'eu_%d_%d_xx.png' % (args.time, args.freq))
     plt.close()
 
 if (~np.isfinite(sky_vis_yy)).all():
@@ -85,7 +85,7 @@ else:
     plt.ylim(0, yh)
     plt.xlabel('Feed number')
     plt.legend()
-    plt.savefig(out_dir+'e_yy_%d_%d.png' % (args.time, args.freq))
+    plt.savefig(out_dir+'e_%d_%d_yy.png' % (args.time, args.freq))
     plt.close()
 
     plt.figure()
@@ -96,7 +96,7 @@ else:
     plt.xlim(0, 97)
     plt.xlabel('Feed number')
     plt.legend()
-    plt.savefig(out_dir+'u_yy_%d_%d.png' % (args.time, args.freq))
+    plt.savefig(out_dir+'u_%d_%d_yy.png' % (args.time, args.freq))
     plt.close()
 
     plt.figure()
@@ -105,5 +105,5 @@ else:
     plt.xlim(0, 97)
     plt.xlabel('Feed number')
     plt.legend()
-    plt.savefig(out_dir+'eu_yy_%d_%d.png' % (args.time, args.freq))
+    plt.savefig(out_dir+'eu_%d_%d_yy.png' % (args.time, args.freq))
     plt.close()
