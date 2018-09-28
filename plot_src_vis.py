@@ -18,6 +18,7 @@ parser.add_argument('-f', '--freq', type=int, default=None, nargs='+',  help='Fr
 parser.add_argument('-s', '--srcs', type=str, default=['cyg'], nargs='+',  help='Point source names to be plotted.') # -s cyg cas crab
 parser.add_argument('--feed1', type=int, default=[1], nargs='+',  help='Feed No. of the first element of baseline to be plot.') # --feed1 1 3 15 31 32 45 62 78 96
 parser.add_argument('--feed2', type=int, default=[1], nargs='+',  help='Feed No. of the second element of baseline to be plot.') # --feed2 1 2 10 31 40 63 80 95
+parser.add_argument('--utc', type=str, default='8h',  help='Time zone of time axis, default 8h for Beijing time, else 0h.') # --utc 0h
 
 args = parser.parse_args()
 
@@ -45,8 +46,15 @@ for src in args.srcs:
         src_vis = f['src_vis'][:]
         otl_vis = f['outlier_vis'][:]
 
-    dt = np.array([ ephem.Date(juldate2ephem(t) + 8*ephem.hour).datetime() for t in time ]) # python datetime
+    if args.utc == '0h':
+        dt = np.array([ ephem.Date(juldate2ephem(t)).datetime() for t in time ]) # python datetime
+    elif args.utc == '8h':
+        dt = np.array([ ephem.Date(juldate2ephem(t) + 8*ephem.hour).datetime() for t in time ]) # python datetime
+    else:
+        raise ValueError('Unsupported utc: %s' % args.utc)
     xlabel = '%s' % dt[0].date()
+    if args.utc == '0h':
+        xlabel = 'UT+0h: ' + xlabel
     xval = mdates.date2num(dt)
 
     ifreqs = range(len(freq)) if args.freq is None else args.freq
