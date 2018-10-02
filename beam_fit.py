@@ -19,6 +19,7 @@ parser.add_argument('--plot_An', action='store_false', help='Plot An.')
 parser.add_argument('--plot_fit_args', action='store_true', help='Plot the function args for the combined fit.')
 parser.add_argument('--plot_FWHM', action='store_false', help='Plot FWHM.')
 parser.add_argument('--threshold', type=float, default=3.0, help='Flag threshold.')
+parser.add_argument('-s', '--source', type=str, default='cyg', help='Calibrator source.')
 
 args = parser.parse_args()
 
@@ -53,6 +54,15 @@ ifreqs = range(nf) if args.freq is None else args.freq
 
 # one sidereal day in second
 sday = 86164.0905
+# rotational angular velocity of the earths
+Omega_e = 7.292e-5 # radian
+# declination of some sources
+dec = {
+         'cyg': 40.0 + 44.0/60 + 2.0 / 3600, # degree
+         'cas': 58.0 + 48.9/60, # degree
+         'crab': 22.0 + 0.0 + 52.2/3600, # degree
+         'vir': 12.0 + 23.0/60 + 28.0/3600, # degree
+      }
 
 # plot gain
 if plot and plot_gain:
@@ -331,18 +341,20 @@ for pi, pol in enumerate(pols):
                 plt.gca().set_xticklabels(['-1200', '-600', '0', '600', '1200'])
             # plt.xlabel('Integral time / 4 second')
             plt.xlabel('time / second')
+            plt.ylabel('Normalized beam response')
             fig_name = 'combined_fit_%d_%s.png' % (fi, pol)
             plt.savefig(out_dir+fig_name)
             plt.close()
 
         # compute FWHM of Gaussian fit
         FWHM = 2 * (2 * np.log(2))**0.5 * poptg[2]
-        FWHM_degree = FWHM * 4.0 * 360.0 / sday
+        # FWHM_degree = FWHM * 4.0 * 360.0 / sday
+        FWHM_degree = np.degrees(Omega_e * (FWHM * 4.0) * np.cos(np.radians(dec[args.source])))
         if pol == 'xx':
             FWHM_xx.append(FWHM_degree)
         elif pol == 'yy':
             FWHM_yy.append(FWHM_degree)
-        msg = 'FWHM of the Gaussian fit for freq = %g, pol = %s: %g degree' % (freq[fi], pol, FWHM_degree)
+        msg = 'FWHM of the Gaussian fit for freq = %g, pol = %s: %g seconds, %g degree' % (freq[fi], pol, FWHM*4.0, FWHM_degree)
         print msg
         fl.write('%s\n' % msg)
 

@@ -52,6 +52,7 @@ for ti in t_inds:
             yl, yh = plt.ylim()
             plt.ylim(yl, yh+(yh-yl)/5)
             plt.xlabel('Feed number')
+            plt.ylabel(r'$\mathbf{G}$ / arbitrary units')
             plt.legend()
             plt.savefig(out_dir + 'Gain_%d_%d_%s.png' % (ti, fi, pol))
             plt.close()

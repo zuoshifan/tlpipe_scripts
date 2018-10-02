@@ -94,5 +94,7 @@ for src in args.srcs:
                     axarr[2].xaxis.set_major_locator(locator)
                     axarr[2].xaxis.set_minor_locator(AutoMinorLocator(2))
                     axarr[2].set_xlabel(xlabel)
+                    # axarr[2].set_ylabel(r'$V_{ij}$ / arbitrary units')
+                    axarr[1].set_ylabel('visibility / arbitrary units')
                     plt.savefig(src_out_dir + 'vis_%d_%d_%d_%s.png' % (fd1, fd2, fi, pol))
                     plt.close()

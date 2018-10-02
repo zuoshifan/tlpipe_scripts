@@ -107,7 +107,9 @@ for fi in ifreqs:
             axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc], label=src)
             axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc]+'o')
         axarr[0].legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=4, mode="expand", borderaxespad=0.)
+        axarr[0].set_ylabel('Amplitude')
         axarr[1].set_xlabel('Feed number')
+        axarr[1].set_ylabel('Phase / radian')
         axarr[1].set_xlim([np.min(feed)-1, np.max(feed)+1])
         axarr[1].set_ylim([-4, 4])
         axarr[1].set_yticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi])
@@ -115,3 +117,45 @@ for fi in ifreqs:
         plt.subplots_adjust(hspace=0.1)
         plt.savefig(out_dir + 'gain_amp+phs_%d_%s.png' % (fi, pol))
         plt.close()
+
+        # plot abs and phs and phs diff
+        plt.figure()
+        f, axarr = plt.subplots(3, sharex=True)
+        for si, src in enumerate(args.srcs):
+            axarr[0].plot(feed, ga[fi][pi][si], cs[si%nc], label=src)
+            axarr[0].plot(feed, ga[fi][pi][si], cs[si%nc]+'o')
+            axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc], label=src)
+            axarr[1].plot(feed, gp[fi][pi][si], cs[si%nc]+'o')
+            pdiff = gp[fi][pi][si] - gp[fi][pi][0]
+            pdiff = np.where(pdiff>np.pi, pdiff-2*np.pi, pdiff)
+            pdiff = np.where(pdiff<-np.pi, pdiff+2*np.pi, pdiff)
+            axarr[2].plot(feed, pdiff, cs[si%nc], label=src)
+            axarr[2].plot(feed, pdiff, cs[si%nc]+'o')
+        axarr[0].legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=4, mode="expand", borderaxespad=0.)
+        axarr[0].set_ylabel('Amplitude')
+        # axarr[1].set_xlabel('Feed number')
+        axarr[1].set_ylabel('Phase / radian')
+        axarr[1].set_xlim([np.min(feed)-1, np.max(feed)+1])
+        axarr[1].set_ylim([-4, 4])
+        axarr[1].set_yticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi])
+        axarr[1].set_yticklabels([r'$-\pi$', r'$-\frac{\pi}{2}$', r'$0$', r'$\frac{\pi}{2}$', r'$\pi$'])
+        axarr[2].set_xlabel('Feed number')
+        axarr[2].set_ylabel('Phase diff / degree')
+        # plt.subplots_adjust(hspace=0.1)
+        plt.savefig(out_dir + 'gain_amp+phs+diff_%d_%s.png' % (fi, pol))
+        plt.close()
+
+        # compare RMS between pairs of calibrators
+        fl = open(out_dir+'RMS.txt', 'w')
+        for s1 in range(len(args.srcs)):
+            for s2 in range(s1+1, len(args.srcs)):
+                pdiff = gp[fi][pi][s1] - gp[fi][pi][s2]
+                pdiff = np.where(pdiff>np.pi, pdiff-2*np.pi, pdiff)
+                pdiff = np.where(pdiff<-np.pi, pdiff+2*np.pi, pdiff)
+                pdiff1 = pdiff[np.isfinite(pdiff)]
+                rms = np.sqrt(np.sum(pdiff1**2) / len(pdiff1))
+                # rms = np.sqrt(np.sum(pdiff1**2) / len(feed))
+                msg = 'For pol %s RMS between %s and %s: %f radian, %f degree' % (pol, args.srcs[s1], args.srcs[s2], rms, np.degrees(rms))
+                print msg
+                fl.write('%s\n' % msg)
+        fl.close()
